@@ -40,6 +40,26 @@ function App() {
     // Only load data if we are "logged in" or checking persistence
     const storedCards = getStoredCards();
     setCards(storedCards);
+
+    // Check for Shared URL Parameters (Simulation of Routing)
+    // ?shareId=12345
+    const params = new URLSearchParams(window.location.search);
+    const shareId = params.get('shareId');
+    const view = params.get('view');
+
+    if (shareId) {
+       // In a real app, fetch from DB. Here we check local storage mock.
+       const sharedCard = storedCards.find(c => c.id === shareId);
+       if (sharedCard) {
+         setSelectedCardId(sharedCard.id);
+         setCurrentView('live');
+       }
+    } else if (view === 'live' && storedCards.length > 0) {
+        // Fallback demo
+        setSelectedCardId(storedCards[0].id);
+        setCurrentView('live');
+    }
+
   }, []);
 
   // --- AUTH HANDLERS ---
@@ -118,7 +138,8 @@ function App() {
     setTimeout(() => {
       setIsPublishing(false);
       const uniqueId = Math.random().toString(36).substring(7);
-      const publishedUrl = `https://indi.app/c/${activeCard.firstName.toLowerCase()}-${uniqueId}`;
+      // Generate a link that works with our Query Param logic
+      const publishedUrl = `${window.location.origin}/?shareId=${activeCard.id}`;
       const publishedCard = { ...activeCard, isPublished: true, publishedUrl };
       handleSaveCard(publishedCard);
       setShowShareModal(true);
