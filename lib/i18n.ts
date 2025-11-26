@@ -5,6 +5,35 @@ type TranslationKeys = {
     dashboard: string;
     editor: string;
     logout: string;
+    login: string;
+    getStarted: string;
+  };
+  landing: {
+    hero: {
+      badge: string;
+      title: string;
+      subtitle: string;
+      cta: string;
+      secondaryCta: string;
+    };
+    features: {
+      title: string;
+      list: {
+        title: string;
+        desc: string;
+      }[];
+    };
+  };
+  auth: {
+    welcome: string;
+    subtitle: string;
+    googleBtn: string;
+    emailLabel: string;
+    passwordLabel: string;
+    loginBtn: string;
+    loggingIn: string;
+    noAccount: string;
+    signUp: string;
   };
   dashboard: {
     title: string;
@@ -89,13 +118,14 @@ type TranslationKeys = {
     saveQr: string;
     openPublic: string;
     copied: string;
+    copiedError: string;
   };
   analytics: {
     totalViews: string;
     totalInteractions: string;
     conversionRate: string;
     performanceOverview: string;
-    days: Record<string, string>; // Maps 'Mon' -> 'Lun' etc.
+    days: Record<string, string>;
   };
   pricing: {
     title: string;
@@ -114,7 +144,37 @@ export const translations: Record<Language, TranslationKeys> = {
     nav: {
       dashboard: "Mis Tarjetas",
       editor: "Editor",
-      logout: "Salir"
+      logout: "Salir",
+      login: "Iniciar Sesión",
+      getStarted: "Empezar Gratis"
+    },
+    landing: {
+      hero: {
+        badge: "Plataforma de Identidad Digital",
+        title: "Tu Presentación Profesional, Elevada.",
+        subtitle: "Crea tarjetas digitales de alto impacto que convierten contactos en clientes. Diseño inteligente, analíticas reales y 100% móvil.",
+        cta: "Comenzar Prueba Gratis",
+        secondaryCta: "Ver Demo en Vivo"
+      },
+      features: {
+        title: "Todo lo que necesitas para destacar",
+        list: [
+          { title: "Diseño Inteligente", desc: "Elige tu color de marca y nuestra IA genera paletas de contraste perfecto." },
+          { title: "Analíticas Reales", desc: "Mide quién ve tu tarjeta y cuántos guardan tu contacto." },
+          { title: "Compartir sin Fricción", desc: "QR dinámico, link personalizado y descarga de vCard en un clic." }
+        ]
+      }
+    },
+    auth: {
+      welcome: "Bienvenido a INDI",
+      subtitle: "Ingresa para gestionar tu identidad digital",
+      googleBtn: "Continuar con Google",
+      emailLabel: "Correo Electrónico",
+      passwordLabel: "Contraseña",
+      loginBtn: "Entrar al Dashboard",
+      loggingIn: "Iniciando...",
+      noAccount: "¿No tienes cuenta?",
+      signUp: "Regístrate gratis"
     },
     dashboard: {
       title: "Panel de Control",
@@ -198,7 +258,8 @@ export const translations: Record<Language, TranslationKeys> = {
       publicLink: "Enlace Público",
       saveQr: "Guardar QR",
       openPublic: "Ver Página Pública",
-      copied: "¡Copiado!"
+      copied: "¡Copiado!",
+      copiedError: "Error al copiar"
     },
     analytics: {
       totalViews: "Vistas Totales",
@@ -236,7 +297,37 @@ export const translations: Record<Language, TranslationKeys> = {
     nav: {
       dashboard: "My Cards",
       editor: "Editor",
-      logout: "Logout"
+      logout: "Logout",
+      login: "Login",
+      getStarted: "Start Free"
+    },
+    landing: {
+      hero: {
+        badge: "Digital Identity Platform",
+        title: "Your Professional Presence, Elevated.",
+        subtitle: "Create high-impact digital cards that convert contacts into clients. Smart design, real analytics, and 100% mobile.",
+        cta: "Start Free Trial",
+        secondaryCta: "View Live Demo"
+      },
+      features: {
+        title: "Everything you need to stand out",
+        list: [
+          { title: "Smart Design", desc: "Choose your brand color and our AI generates perfectly contrasted palettes." },
+          { title: "Real Analytics", desc: "Track who views your card and how many save your contact." },
+          { title: "Frictionless Sharing", desc: "Dynamic QR, custom link, and one-click vCard download." }
+        ]
+      }
+    },
+    auth: {
+      welcome: "Welcome back",
+      subtitle: "Login to manage your digital identity",
+      googleBtn: "Continue with Google",
+      emailLabel: "Email Address",
+      passwordLabel: "Password",
+      loginBtn: "Enter Dashboard",
+      loggingIn: "Logging in...",
+      noAccount: "No account?",
+      signUp: "Sign up free"
     },
     dashboard: {
       title: "Dashboard",
@@ -320,7 +411,8 @@ export const translations: Record<Language, TranslationKeys> = {
       publicLink: "Public Link",
       saveQr: "Save QR",
       openPublic: "Open Public Page",
-      copied: "Copied!"
+      copied: "Copied!",
+      copiedError: "Copy Error"
     },
     analytics: {
       totalViews: "Total Views",

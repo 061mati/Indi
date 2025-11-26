@@ -63,3 +63,6 @@ export interface AnalyticsData {
 }
 
 export type Language = 'es' | 'en';
+
+// Updated ViewState to support SaaS flow
+export type ViewState = 'landing' | 'auth' | 'dashboard' | 'editor' | 'live';
