@@ -5,6 +5,7 @@ import CardPreview from './components/preview/CardPreview';
 import CardEditor from './components/editor/CardEditor';
 import Dashboard from './components/dashboard/Dashboard';
 import ShareModal from './components/modals/ShareModal';
+import PricingModal from './components/modals/PricingModal';
 import { DigitalCard, Language } from './types';
 import { getStoredCards, saveCardToStorage, deleteCardFromStorage, createNewCardTemplate } from './services/storageService';
 import { translations } from './lib/i18n';
@@ -18,6 +19,7 @@ function App() {
   // State for Data Management
   const [cards, setCards] = useState<DigitalCard[]>([]);
   const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
+  const [cardToUpgrade, setCardToUpgrade] = useState<DigitalCard | null>(null);
   
   // Language State - Default to Spanish ('es')
   const [language, setLanguage] = useState<Language>('es');
@@ -32,6 +34,7 @@ function App() {
   // Publishing State
   const [isPublishing, setIsPublishing] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
 
   const t = translations[language].nav;
 
@@ -126,6 +129,25 @@ function App() {
       handleSaveCard(publishedCard);
       setShowShareModal(true);
     }, 1500);
+  };
+
+  // Upgrade Flow
+  const handleUpgradeClick = (card: DigitalCard) => {
+    setCardToUpgrade(card);
+    setShowPricingModal(true);
+  };
+
+  const handleUpgradeSuccess = () => {
+    if (cardToUpgrade) {
+      const upgradedCard: DigitalCard = {
+        ...cardToUpgrade,
+        subscriptionStatus: 'active',
+        planType: 'pro'
+      };
+      handleSaveCard(upgradedCard);
+    }
+    setShowPricingModal(false);
+    setCardToUpgrade(null);
   };
 
   const toggleLanguage = () => {
@@ -262,7 +284,6 @@ function App() {
                 }}
                 onPublish={handlePublish}
                 isPublishing={isPublishing}
-                // onBack prop removed as we use the main header for navigation now
                 language={language}
               />
             </div>
@@ -281,6 +302,7 @@ function App() {
               onEdit={handleEditCard}
               onDelete={handleDeleteCard}
               onViewLive={handleViewLive}
+              onUpgrade={handleUpgradeClick}
               language={language}
             />
           </div>
@@ -311,6 +333,16 @@ function App() {
               setShowShareModal(false);
               setCurrentView('live');
           }}
+          language={language}
+        />
+      )}
+
+      {/* Pricing Modal */}
+      {showPricingModal && (
+        <PricingModal 
+          isOpen={showPricingModal} 
+          onClose={() => setShowPricingModal(false)}
+          onSuccess={handleUpgradeSuccess}
           language={language}
         />
       )}

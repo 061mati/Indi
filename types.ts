@@ -30,6 +30,8 @@ export interface CustomThemeConfig {
   layout: 'modern' | 'centered' | 'classic';
 }
 
+export type SubscriptionStatus = 'trialing' | 'active' | 'expired';
+
 export interface DigitalCard {
   id: string;
   firstName: string;
@@ -46,6 +48,11 @@ export interface DigitalCard {
   socialLinks: SocialLink[];
   isPublished?: boolean;
   publishedUrl?: string;
+  
+  // Business Logic Fields
+  subscriptionStatus?: SubscriptionStatus;
+  trialEndsAt?: number; // Timestamp
+  planType?: 'free' | 'pro';
 }
 
 export interface AnalyticsData {

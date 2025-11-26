@@ -9,7 +9,9 @@ import {
   Globe, 
   Clock, 
   BarChart3,
-  CreditCard
+  CreditCard,
+  Crown,
+  AlertTriangle
 } from 'lucide-react';
 import Analytics from './Analytics';
 import { MOCK_ANALYTICS } from '../../constants';
@@ -22,6 +24,7 @@ interface DashboardProps {
   onDelete: (id: string) => void;
   onViewLive: (card: DigitalCard) => void;
   language: Language;
+  onUpgrade: (card: DigitalCard) => void; // New prop for upgrade flow
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ 
@@ -30,7 +33,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   onEdit, 
   onDelete, 
   onViewLive,
-  language
+  language,
+  onUpgrade
 }) => {
   const t = translations[language].dashboard;
   
@@ -81,6 +85,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 onEdit={() => onEdit(card)} 
                 onDelete={() => onDelete(card.id)}
                 onView={() => onViewLive(card)}
+                onUpgrade={() => onUpgrade(card)}
                 t={t}
               />
             ))}
@@ -116,21 +121,30 @@ interface CardItemProps {
   onEdit: () => void; 
   onDelete: () => void;
   onView: () => void;
+  onUpgrade: () => void;
   t: any;
 }
 
-const CardItem: React.FC<CardItemProps> = ({ card, onEdit, onDelete, onView, t }) => {
+const CardItem: React.FC<CardItemProps> = ({ card, onEdit, onDelete, onView, onUpgrade, t }) => {
   const brandColor = card.themeConfig?.brandColor || '#10b981';
+  
+  // Subscription Logic
+  const status = card.subscriptionStatus || 'trialing'; // Default to trial if new
+  const now = Date.now();
+  const trialEnds = card.trialEndsAt || (now + 7 * 86400000);
+  const daysLeft = Math.ceil((trialEnds - now) / (1000 * 60 * 60 * 24));
+  const isExpired = status === 'expired' || (status === 'trialing' && daysLeft <= 0);
 
   return (
-    <div className="group relative bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-3xl overflow-hidden transition-all hover:shadow-2xl hover:shadow-black/50 flex flex-col isolate">
-      {/* Removed hover:-translate-y-1 to improve button click stability */}
+    <div className={`group relative bg-slate-900 border ${isExpired ? 'border-red-900/50' : 'border-slate-800'} hover:border-slate-600 rounded-3xl overflow-hidden transition-all hover:shadow-2xl hover:shadow-black/50 flex flex-col isolate`}>
       
       {/* Card Header / Preview Area */}
       <div 
         className="h-32 relative overflow-hidden"
         style={{ 
-           background: `linear-gradient(135deg, ${brandColor}, ${brandColor}44)` 
+           background: isExpired 
+             ? 'linear-gradient(135deg, #450a0a, #1a0606)' 
+             : `linear-gradient(135deg, ${brandColor}, ${brandColor}44)` 
         }}
       >
          <div className="absolute inset-0 bg-slate-900/20 backdrop-blur-[2px]"></div>
@@ -139,17 +153,28 @@ const CardItem: React.FC<CardItemProps> = ({ card, onEdit, onDelete, onView, t }
          <div className="absolute left-8 bottom-[-20px] w-24 h-24 bg-black/20 rounded-full blur-xl"></div>
          
          {/* Status Badge */}
-         <div className="absolute top-4 right-4 px-3 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm flex items-center gap-1.5 z-10">
-            {card.isPublished ? (
-              <>
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
-                {t.published}
-              </>
+         <div className="absolute top-4 right-4 flex flex-col gap-2 items-end z-10">
+            {/* Published Badge */}
+            {card.isPublished && (
+                 <div className="px-2.5 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                    {t.published}
+                 </div>
+            )}
+            
+            {/* Subscription Badge */}
+            {status === 'active' ? (
+                 <div className="px-2.5 py-1 rounded-full bg-amber-500/90 text-slate-900 text-[10px] font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                    <Crown size={10} fill="currentColor" /> {t.subscription.proActive}
+                 </div>
+            ) : isExpired ? (
+                 <div className="px-2.5 py-1 rounded-full bg-red-600 text-white text-[10px] font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5 animate-pulse">
+                    <AlertTriangle size={10} fill="currentColor" /> {t.subscription.expired}
+                 </div>
             ) : (
-              <>
-                <div className="w-1.5 h-1.5 rounded-full bg-amber-400"></div>
-                {t.draft}
-              </>
+                 <div className="px-2.5 py-1 rounded-full bg-blue-600/90 text-white text-[10px] font-bold uppercase tracking-wider shadow-sm flex items-center gap-1.5">
+                    <Clock size={10} /> {daysLeft} {t.subscription.daysLeft}
+                 </div>
             )}
          </div>
       </div>
@@ -162,11 +187,9 @@ const CardItem: React.FC<CardItemProps> = ({ card, onEdit, onDelete, onView, t }
                 <img 
                   src={card.avatarUrl} 
                   alt="Profile" 
-                  className="w-20 h-20 rounded-2xl object-cover border-4 border-slate-900 shadow-xl bg-slate-800"
+                  className={`w-20 h-20 rounded-2xl object-cover border-4 border-slate-900 shadow-xl bg-slate-800 ${isExpired ? 'grayscale opacity-75' : ''}`}
                 />
              </div>
-             {/* Action Menu (Placeholder for future dropdown) */}
-             <div className="mt-3"></div>
          </div>
 
          <div className="mb-6">
@@ -176,6 +199,18 @@ const CardItem: React.FC<CardItemProps> = ({ card, onEdit, onDelete, onView, t }
            <p className="text-sm text-emerald-400 font-medium truncate mb-0.5">{card.title || 'No Title'}</p>
            <p className="text-xs text-slate-500 truncate">{card.company || 'No Company'}</p>
          </div>
+
+         {/* Trial / Upgrade Banner (If not Active) */}
+         {status !== 'active' && (
+             <div className="mb-4">
+                <button 
+                  onClick={onUpgrade}
+                  className="w-full py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500/50 transition-all flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wide text-emerald-400 group-hover:text-emerald-300"
+                >
+                   <Crown size={14} /> {t.actions.upgrade}
+                </button>
+             </div>
+         )}
 
          {/* Footer Actions - Elevated Z-Index and Solid Background to ensure clickable */}
          <div className="mt-auto grid grid-cols-3 gap-2 border-t border-slate-800 pt-4 relative z-50 bg-slate-900">

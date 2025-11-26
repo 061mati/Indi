@@ -22,6 +22,13 @@ type TranslationKeys = {
       edit: string;
       delete: string;
       deleteConfirm: string;
+      upgrade: string;
+    };
+    subscription: {
+      trialActive: string;
+      daysLeft: string;
+      expired: string;
+      proActive: string;
     };
   };
   editor: {
@@ -90,6 +97,16 @@ type TranslationKeys = {
     performanceOverview: string;
     days: Record<string, string>; // Maps 'Mon' -> 'Lun' etc.
   };
+  pricing: {
+    title: string;
+    subtitle: string;
+    price: string;
+    period: string;
+    features: string[];
+    cta: string;
+    processing: string;
+    secure: string;
+  };
 };
 
 export const translations: Record<Language, TranslationKeys> = {
@@ -114,7 +131,14 @@ export const translations: Record<Language, TranslationKeys> = {
         preview: "Vista Previa",
         edit: "Editar",
         delete: "Borrar",
-        deleteConfirm: "¿Estás seguro de que quieres eliminar esta tarjeta?"
+        deleteConfirm: "¿Estás seguro de que quieres eliminar esta tarjeta?",
+        upgrade: "Activar Plan"
+      },
+      subscription: {
+        trialActive: "Prueba Gratuita",
+        daysLeft: "días restantes",
+        expired: "Expirada",
+        proActive: "Plan PRO Activo"
       }
     },
     editor: {
@@ -190,6 +214,22 @@ export const translations: Record<Language, TranslationKeys> = {
         'Sat': 'Sáb',
         'Sun': 'Dom'
       }
+    },
+    pricing: {
+      title: "Desbloquea todo el potencial",
+      subtitle: "Mantén tu tarjeta activa y accede a funciones premium.",
+      price: "$4.990",
+      period: "CLP / Semestral",
+      features: [
+        "Tarjeta Digital activa 24/7",
+        "Ediciones ilimitadas en tiempo real",
+        "Analíticas avanzadas de visitas",
+        "Sin marca de agua (Próximamente)",
+        "Soporte prioritario"
+      ],
+      cta: "Pagar y Activar",
+      processing: "Procesando pago...",
+      secure: "Pago 100% seguro vía MercadoPago / Stripe"
     }
   },
   en: {
@@ -213,7 +253,14 @@ export const translations: Record<Language, TranslationKeys> = {
         preview: "Preview",
         edit: "Edit",
         delete: "Delete",
-        deleteConfirm: "Are you sure you want to delete this card?"
+        deleteConfirm: "Are you sure you want to delete this card?",
+        upgrade: "Activate Plan"
+      },
+      subscription: {
+        trialActive: "Free Trial",
+        daysLeft: "days left",
+        expired: "Expired",
+        proActive: "PRO Plan Active"
       }
     },
     editor: {
@@ -289,6 +336,22 @@ export const translations: Record<Language, TranslationKeys> = {
         'Sat': 'Sat',
         'Sun': 'Sun'
       }
+    },
+    pricing: {
+      title: "Unlock Full Potential",
+      subtitle: "Keep your card active and access premium features.",
+      price: "$4,990",
+      period: "CLP / 6 Months",
+      features: [
+        "Digital Card active 24/7",
+        "Unlimited real-time edits",
+        "Advanced visitor analytics",
+        "Remove branding (Coming soon)",
+        "Priority support"
+      ],
+      cta: "Pay & Activate",
+      processing: "Processing payment...",
+      secure: "100% secure payment via Stripe/MercadoPago"
     }
   }
 };

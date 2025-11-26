@@ -11,7 +11,13 @@ export const getStoredCards = (): DigitalCard[] => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (!stored) {
       // Initialize with demo card if empty
-      const initialData = [INITIAL_CARD];
+      // Ensure the initial card has subscription logic if needed, though for the demo constant it might be cleaner to add it dynamically
+      const initialWithSub: DigitalCard = {
+         ...INITIAL_CARD,
+         subscriptionStatus: 'trialing',
+         trialEndsAt: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days from now
+      };
+      const initialData = [initialWithSub];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(initialData));
       return initialData;
     }
@@ -60,7 +66,8 @@ export const createNewCardTemplate = (): DigitalCard => {
     id: timestamp,
     isPublished: false,
     publishedUrl: undefined,
-    // Note: We keep firstName, lastName, avatarUrl, etc. from INITIAL_CARD
-    // to ensure the user starts with the "Female Psychologist" preset as requested.
+    // Business Logic: New cards start with a 7-day trial
+    subscriptionStatus: 'trialing',
+    trialEndsAt: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 Days from now
   };
 };
